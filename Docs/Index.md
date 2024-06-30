@@ -9,7 +9,7 @@
 > Научить пользоваться инструментами непрерывной интеграции (continuous integration) и непрерывного развертывания (на базе системы Jenkins)
 
 ### Краткое описание
-> Слушатели курса будут разбиты на несколько конманда. В рамках каждой команды будут выделены следующие направления:
+> Слушатели курса будут разбиты на несколько конманд. В рамках каждой команды будут `выделены` следующие направления:
 > - Разработка структуры базы данных (аналитика)
 > - Разработка Backend системы (разработка)
 > - Разработка Front системы на базы Blazor (разработка)
@@ -28,17 +28,18 @@
 1. [Net 8](https://dotnet.microsoft.com/ru-ru/download)
 2. [Docker](https://www.docker.com/products/docker-desktop/)
 3. [visual Studio Code](https://code.visualstudio.com/download)
-3.1. Набор расширений:
-  - https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.vscode-dotnet-runtime
-  - https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp
-  - https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit
-  - https://marketplace.visualstudio.com/items?itemName=k--kato.docomment
-  - https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-database-client2
-  - https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.vscodeintellicode-csharp
-  - https://marketplace.visualstudio.com/items?itemName=patcx.vscode-nuget-gallery
-  - https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode
-  - https://marketplace.visualstudio.com/items?itemName=dunstontc.vscode-docker-syntax
 4. [Git client](https://git-scm.com/downloads)
+
+##### Набор расширений:
+  - [.NET Install Tool](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.vscode-dotnet-runtime)
+  - [C#](marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)
+  - [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
+  - [C# XML Documentation Comments](https://marketplace.visualstudio.com/items?itemName=k--kato.docomment)
+  - [Database Client](https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-database-client2)
+  - [IntelliCode for C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.vscodeintellicode-csharp)
+  - [NuGet Gallery](https://marketplace.visualstudio.com/items?itemName=patcx.vscode-nuget-gallery)
+  - [Postman](https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode)
+  - [vscode-docker-syntax](https://marketplace.visualstudio.com/items?itemName=dunstontc.vscode-docker-syntax)
 
 #### Требования
 1. Базовый опыт программирования на языке программирования `C++`
