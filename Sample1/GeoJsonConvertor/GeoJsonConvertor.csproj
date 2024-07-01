@@ -7,4 +7,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+      <Content Include="..\..\Datasets\fires_2011-2021.geojson">
+        <Link>fires_2011-2021.geojson</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+  </ItemGroup>
+
+
 </Project>
