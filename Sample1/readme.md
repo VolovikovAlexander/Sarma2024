@@ -61,7 +61,7 @@ dotnet gitignore file                         gitignore                       Co
 5. Запускаем:
 ```
 dotnet new gitignore
-dotnet new console -n GeoJsonConvertor
+dotnet new console -n GeoJsonConvertor --use-program-main
 ```
 
 

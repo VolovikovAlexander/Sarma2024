@@ -1,2 +1,15 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿namespace GeoJsonConvertor.Logics;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        if(args.Length < 1) throw new ArgumentException("Необходимо передать аргументы! Наименование файла.");
+        var fileName = args[0].Trim();
+        if(!File.Exists(fileName)) throw new FileNotFoundException($"Не найден указанный файл {fileName}!");
+
+        var convertor =  new Convertor();
+        var result = await convertor.Load(fileName);
+        if(result) Console.WriteLine($"Данные из файла {fileName} загружены успешно!");
+    }
+}
