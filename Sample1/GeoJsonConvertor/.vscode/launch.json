@@ -5,6 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": ".NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/Debug/net7.0/GeoJsonConvertor.dll",
             "args": ["fires_2011-2021.geojson"],
         }
     ]
