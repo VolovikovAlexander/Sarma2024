@@ -1,8 +1,13 @@
+using System.Text.Json;
 using GeoJsonConvertor.Core;
 using GeoJsonConvertor.Models;
 
 namespace GeoJsonConvertor.Logics;
-public class Convertor : IConvertor
+
+/// <summary>
+/// Конвертацяи данных в модели типа <see cref="GeoInformation"/>
+/// </summary>
+public class Convertor : AbstractErrorHandler, IConvertor
 {
     /// <summary>
     /// Полученный набор данных
@@ -17,6 +22,18 @@ public class Convertor : IConvertor
     /// <returns></returns>
     public Task<bool> Load(string fileName)
     {
-        throw new NotImplementedException();
+        this.Clear();
+
+        try
+        {
+            var json = File.ReadAllText(fileName);
+            Data = JsonSerializer.Deserialize<GeoInformation>(json);    
+        }
+        catch(Exception ex)
+        {
+            ErrorText = $"Ошибка при выполнении конвертиации данных в тип {typeof(GeoInformation)}!\n{ex}";
+        }
+        
+        return Task.FromResult(true);
     }
 }

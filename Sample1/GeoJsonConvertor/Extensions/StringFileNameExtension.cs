@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 
 namespace GeoJsonConvertor.Extensions;
 public static class StringFileNameExtension
@@ -9,12 +8,14 @@ public static class StringFileNameExtension
     /// <param name="fileName"> Текущий файл </param>
     /// <param name="catalog"> Стартовый каталог </param>
     /// <returns></returns>
-    public static string ToFileName(this string fileName, string catalog = "")
+    public static string ToFullFileName(this string fileName, string catalog = "")
     {
         var source = fileName.Trim();
         if(File.Exists(source)) return source;
         if(File.Exists(Path.Combine(catalog, source))) return Path.Combine(catalog, source);
-        if(string.IsNullOrEmpty(catalog)) return ToFileName(source, Directory.GetCurrentDirectory());
+
+        var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? Directory.GetCurrentDirectory();
+        if(string.IsNullOrEmpty(catalog)) return ToFullFileName(source, path);
         throw new FileNotFoundException($"Не найден файл {source}, каталог {catalog}!");
     }
 }

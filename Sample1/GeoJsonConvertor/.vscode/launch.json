@@ -8,8 +8,10 @@
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/Debug/net7.0/GeoJsonConvertor.dll",
+            "program": "${workspaceFolder}/bin/Debug/net7.0/GeoJsonConvertor",
             "args": ["fires_2011-2021.geojson"],
+            "stopAtEntry": true,
+            "externalConsole": false
         }
     ]
 }

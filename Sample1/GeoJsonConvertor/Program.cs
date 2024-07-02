@@ -1,5 +1,7 @@
 ﻿using GeoJsonConvertor.Extensions;
-namespace GeoJsonConvertor.Logics;
+using GeoJsonConvertor.Logics;
+
+namespace GeoJsonConvertor;
 
 class Program
 {
@@ -7,7 +9,7 @@ class Program
     {
         if(args.Length < 1) throw new ArgumentException("Необходимо передать аргументы! Наименование файла.");
 
-        var fileName =    args[0].ToFileName();
+        var fileName =  args[0].ToFullFileName();
         if(!File.Exists(fileName)) throw new FileNotFoundException($"Не найден указанный файл {fileName}!");
 
         var convertor =  new Convertor();
