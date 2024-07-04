@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  geoconvertor:
+    image: geoconvertor:latest
+    container_name: geoconvertor
+    volumes:
+      - ./template.geojson:/app/template.geojson
+
+networks:
+  default:
+
+
+  
