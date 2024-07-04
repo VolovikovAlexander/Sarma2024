@@ -15,5 +15,7 @@ class Program
         var convertor =  new Convertor();
         var result = await convertor.Load(fileName);
         if(result) Console.WriteLine($"Данные из файла {fileName} загружены успешно!");
+
+        Console.ReadLine();
     }
 }

@@ -35,6 +35,22 @@ Unhandled exception. System.ArgumentException: Необходимо переда
 ```
 
 5. Создаем `docker-compose` файл для запуска приложения.
+```
+version: "3"
+
+services:
+  geoconvertor:
+    image: geoconvertor:latest
+    container_name: geoconvertor
+    volumes:
+      - ./template.geojson:/app/template.geojson
+
+networks:
+  default:
+```
+
+6. Запускаем `sudo docker-compose up -d`
+
 
 
 
