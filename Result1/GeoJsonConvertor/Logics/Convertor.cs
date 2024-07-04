@@ -55,7 +55,7 @@ public class Convertor : AbstractErrorHandler, IConvertor
         var regions = new HashSet<string>();
         foreach(var feature in Data.features)
         {   
-            if(regions.Contains(feature.properties.name_ru.Trim())) regions.Add(feature.properties.name_ru.Trim());
+            if(!regions.Contains(feature.properties.name_ru.Trim())) regions.Add(feature.properties.name_ru.Trim());
             var item = new FireRecord(feature.properties.name_ru, feature.properties.init_date);
             if(!items.Contains(item)) items.Add(item);
         }
