@@ -45,7 +45,7 @@ public class Convertor : AbstractErrorHandler, IConvertor
     /// Сформировать структуру для выполенния анализа данных по метрикам.
     /// </summary>
     /// <returns></returns> 
-    public IDictionary<Region, IList<FireHistory>> CreateFireHistory()
+    public IDictionary<Region, IList<FireHistory>> CreateFireHistory(DateTime? startPeriod = null, DateTime? stopPeriod = null)
     {
         ArgumentNullException.ThrowIfNull(Data);
         var result = new Dictionary<Region, IList<FireHistory>>();
@@ -53,7 +53,8 @@ public class Convertor : AbstractErrorHandler, IConvertor
 
         var items = new HashSet<FireRecord>();
         var regions = new HashSet<string>();
-        foreach(var feature in Data.features)
+        var data = Data.features.Where(x => x.properties.init_date >= startPeriod &&  x.properties.init_date <= stopPeriod);
+        foreach(var feature in data)
         {   
             if(!regions.Contains(feature.properties.name_ru.Trim())) regions.Add(feature.properties.name_ru.Trim());
             var item = new FireRecord(feature.properties.name_ru, feature.properties.init_date);
