@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace GeoJsonConvertor.Extensions;
 public static class QuerableExtension
 {

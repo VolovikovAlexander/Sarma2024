@@ -1,6 +1,7 @@
 using System.Data;
 using System.Text.Json;
 using GeoJsonConvertor.Core;
+using GeoJsonConvertor.Extensions;
 using GeoJsonConvertor.Models;
 
 namespace GeoJsonConvertor.Logics;
@@ -53,7 +54,10 @@ public class Convertor : AbstractErrorHandler, IConvertor
 
         var items = new HashSet<FireRecord>();
         var regions = new HashSet<string>();
-        var data = Data.features.Where(x => x.properties.init_date >= startPeriod &&  x.properties.init_date <= stopPeriod);
+        var data = Data.features 
+                    .IfWhere(() => startPeriod is not null, x => x.properties.init_date >= startPeriod)
+                    .IfWhere(() => stopPeriod is not null, x => x.properties.init_date <= stopPeriod)
+                    .ToList();
         foreach(var feature in data)
         {   
             if(!regions.Contains(feature.properties.name_ru.Trim())) regions.Add(feature.properties.name_ru.Trim());
