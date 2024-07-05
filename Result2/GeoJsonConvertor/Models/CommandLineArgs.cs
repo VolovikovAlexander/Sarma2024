@@ -9,22 +9,27 @@ public class CommandLineArgs
     /// <summary>
     /// Наименование файла
     /// </summary> 
-    [PositionArgs(1)]
+    [PositionArgs(1, typeof(string))]
     public string FileName { get; set; }  = string.Empty;
 
     /// <summary>
     /// Дата начала периода фильтрации
     /// </summary>
     /// <value></value>
-    [PositionArgs(2)]
-    public DateTime StartPeriod {get; set; } = DateTime.Now;
+    [PositionArgs(2, typeof(DateTime))]
+    public DateTime StartPeriod {get; set; } = new DateTime(1900,1,1);
 
     /// <summary>
     /// Дата окончания прерида фильтрации
     /// </summary>
     /// <value></value>
-    [PositionArgs(3)]
+    [PositionArgs(3, typeof(DateTime))]
     public DateTime StopPeriod {get; set; } = DateTime.Now;
+
+    public override string ToString()
+    {
+        return $"Переданные параметры: {FileName},{StartPeriod.ToString()}, {StopPeriod.ToString()}";
+    }
 }
 
 
@@ -33,9 +38,10 @@ public class CommandLineArgs
 /// </summary> 
 internal class PositionArgsAttribute : Attribute
 {
-    public PositionArgsAttribute(int position)
+    public PositionArgsAttribute(int position, Type type)
     {
         Position = position;
+        Type = type;
     }
 
     /// <summary>
@@ -43,4 +49,10 @@ internal class PositionArgsAttribute : Attribute
     /// </summary>
     /// <value></value>    
     public int Position { get; private set; } = 1;
+
+    /// <summary>
+    /// Тип для конвертации
+    /// </summary>
+    /// <returns></returns>
+    public Type Type {get;private set; } = typeof(string);
 }

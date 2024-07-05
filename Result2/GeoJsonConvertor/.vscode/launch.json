@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "program": "${workspaceFolder}/bin/Debug/net7.0/GeoJsonConvertor",
-            "args": ["fires_2011-2021.geojson"],
+            "args": ["fires_2011-2021.geojson","2020-01-01","2023-01-01"],
             "stopAtEntry": true,
             "externalConsole": false
         }

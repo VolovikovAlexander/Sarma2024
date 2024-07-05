@@ -7,18 +7,19 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        if(args.Length < 1) throw new ArgumentException("Необходимо передать аргументы! Наименование файла.");
+        Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} Приложение запущено.");
+        var properties = args.GetProperties();
+        Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} {properties}");
 
-        var fileName =  args[0].ToFullFileName();
+        var fileName =  properties.FileName.ToFullFileName();
         if(!File.Exists(fileName)) throw new FileNotFoundException($"Не найден указанный файл {fileName}!");
 
-        Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} Приложение запущено.");
         var convertor =  new Convertor();
         var result = await convertor.Load(fileName);
         if(result)
         {
             Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} Данные из файла {fileName} загружены успешно.");
-            var history = convertor.CreateFireHistory();
+            var history = convertor.CreateFireHistory(properties.StartPeriod, properties.StopPeriod);
             Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} История для записи подготовлена.");
         }
 
