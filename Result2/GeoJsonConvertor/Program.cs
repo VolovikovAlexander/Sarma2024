@@ -21,6 +21,7 @@ class Program
             Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} Данные из файла {fileName} загружены успешно.");
             var history = convertor.CreateFireHistory(properties.StartPeriod, properties.StopPeriod);
             Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} История для записи подготовлена.");
+            Console.WriteLine(history.CreateAnalyzeTable());
         }
 
         Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} Приложение завершено.");
