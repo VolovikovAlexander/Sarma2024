@@ -7,9 +7,9 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} Приложение запущено.");
+        ConsoleWrite("Приложение запущено.");
         var properties = args.GetProperties();
-        Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} {properties}");
+        ConsoleWrite($"{properties}");
 
         var fileName =  properties.FileName.ToFullFileName();
         if(!File.Exists(fileName)) throw new FileNotFoundException($"Не найден указанный файл {fileName}!");
@@ -18,12 +18,16 @@ class Program
         var result = await convertor.Load(fileName);
         if(result)
         {
-            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} Данные из файла {fileName} загружены успешно.");
+            ConsoleWrite($"Данные из файла {fileName} загружены успешно.");
+            ConsoleWrite($"Дата начала {properties.StartPeriod}, дата окончания {properties.StopPeriod}");
             var history = convertor.CreateFireHistory(properties.StartPeriod, properties.StopPeriod);
-            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} История для записи подготовлена.");
+            ConsoleWrite("История для записи подготовлена.");
             Console.WriteLine(history.CreateAnalyzeTable());
         }
 
-        Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} Приложение завершено.");
+        ConsoleWrite("Приложение завершено.");
+        Console.ReadLine();
     }
+
+    static void ConsoleWrite(string message) => Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} {message}");
 }

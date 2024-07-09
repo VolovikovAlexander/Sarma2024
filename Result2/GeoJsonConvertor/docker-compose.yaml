@@ -6,6 +6,7 @@ services:
     container_name: geoconvertor
     volumes:
       - ./template.geojson:/app/template.geojson
+    command: ["dotnet", "GeoJsonConvertor.dll", "template.geojson", "2020-01-01", "2024-06-01"]
 
 networks:
   default:
