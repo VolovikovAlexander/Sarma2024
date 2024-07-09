@@ -18,7 +18,7 @@ public static class FireHistoryExtension
 
         foreach(var row in source.Keys.OrderBy(x => x.Name))
         {
-            buider.AppendLine($"|{row.Name}   | {source[row].Count()} |");
+            buider.AppendLine($"| {row.Name}   | {source[row].Count()} |");
         }
 
         buider.AppendLine("|--------------------|--------------------------|");
