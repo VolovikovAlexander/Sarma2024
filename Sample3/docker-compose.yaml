@@ -1,0 +1,41 @@
+version: "3.0"
+services:
+  # https://habr.com/ru/articles/578744/
+  # https://hub.docker.com/_/postgres
+
+  postgres:
+    image: postgres:16.3
+    container_name: "postgres"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASS}
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRESQL_PORT:-5432}:5432"
+    networks:
+      - pgdata  
+    restart: always  
+
+  pgadmin:
+    container_name: "pgadmin"
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${POSTGRESQL_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${POSTGRESQL_PASS}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin  
+    networks:
+      - pgdata  
+    restart: always
+    depends_on:
+    - postgres
+
+
+networks:
+  pgdata:
+
