@@ -39,6 +39,12 @@ Microsoft.Extensions.Configuration.FileExtensions
 Microsoft.Extensions.Configuration.Json
 ```
 
+6. Формируем подключение ADO.net
+https://learn.microsoft.com/ru-ru/dotnet/framework/data/adonet/ado-net-code-examples
+https://www.npgsql.org/
+
+
+
 
 
 
