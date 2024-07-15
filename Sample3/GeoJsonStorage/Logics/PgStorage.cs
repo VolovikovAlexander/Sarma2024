@@ -8,7 +8,7 @@ namespace GeoJsonConvertor.Logics;
 /// <summary>
 /// Реализация хранилища согласно интерфейсу <see cref="IStorage"/>
 /// </summary>
-public class PgStorage: AbstractErrorHandler, IStorage
+public class PgStorage : AbstractErrorHandler, IStorage
 {
     private readonly StorageOptions _options;
 
@@ -26,7 +26,7 @@ public class PgStorage: AbstractErrorHandler, IStorage
     /// <returns></returns>
     public async Task Add(Region source)
         => await this.AddInner<Region, FireHistory>(source);
-    
+
 
     /// <summary>
     /// Добавить новую историю 
@@ -36,6 +36,43 @@ public class PgStorage: AbstractErrorHandler, IStorage
     public async Task Add(FireHistory source)
         => await this.AddInner<Region, FireHistory>(source);
 
+    /// <summary>
+    /// Сохранить данные
+    /// </summary>
+    /// <param name="source"></param>
+    /// <returns></returns>
+    public async Task Save(IDictionary<Region, IList<FireHistory>> source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        Clear();
+
+        // Загрузим новый список
+        foreach (var region in source.Keys)
+        {
+            // Добавляем новые регионы
+            await Add(region);
+            foreach (var row in source[region])
+            {
+                // Добавляем новые записи истории
+                await Add(row);
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// Очистить базу данных
+    /// </summary>
+    public override void Clear()
+    {
+        base.Clear();
+
+        var dataSource = new NpgsqlDataSourceBuilder(_options.ConnectionString).Build();
+        using var connection = dataSource.OpenConnection();
+        using var command = new NpgsqlCommand("delete from regions;", connection);
+
+        command.ExecuteNonQuery();
+    }
 
     /// <summary>
     /// Шаблонный метод для создания SQL запроса на добавление записи
@@ -45,9 +82,9 @@ public class PgStorage: AbstractErrorHandler, IStorage
     /// <typeparam name="T1"> Один из типов от IModel </typeparam>
     /// <typeparam name="T2"> Один из типов от IModel </typeparam>
     /// <returns></returns>
-    private async Task AddInner<T1, T2>(IModel source) 
-        where T1: Region
-        where T2: FireHistory 
+    private async Task AddInner<T1, T2>(IModel source)
+        where T1 : Region
+        where T2 : FireHistory
     {
         using var dataSource = new NpgsqlDataSourceBuilder(_options.ConnectionString).Build();
         using var connection = dataSource.OpenConnection();
@@ -58,16 +95,16 @@ public class PgStorage: AbstractErrorHandler, IStorage
         var modelFireHistory = source as T2;
         var sql = string.Empty;
 
-        IModel model = modelRegion is null ? modelRegion! : modelFireHistory!;
-        sql = string.Format(template, 
+        IModel model = modelRegion is not null ? modelRegion! : modelFireHistory!;
+        sql = string.Format(template,
                     // Наименование таблицы
-                    model.Convert<T1>(GeoJsonStorage.ConvertType.TableName),
+                    model.Convert(GeoJsonStorage.ConvertType.TableName),
                     // Список полей
-                    model.Convert<T1>(GeoJsonStorage.ConvertType.Head),
+                    model.Convert(GeoJsonStorage.ConvertType.Head),
                     // Данные
-                    model.Convert<T1>(GeoJsonStorage.ConvertType.Data));
-        
-        
+                    model.Convert(GeoJsonStorage.ConvertType.Data));
+
+
         await using var command = new NpgsqlCommand(sql, connection);
         await command.ExecuteNonQueryAsync();
     }

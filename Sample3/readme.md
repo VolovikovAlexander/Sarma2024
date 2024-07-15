@@ -47,6 +47,24 @@ https://learn.microsoft.com/ru-ru/dotnet/framework/data/adonet/ado-net-code-exam
 https://www.npgsql.org/
 
 
+7. Запускаем приложение. Ждем завершаем. Создаем SQL запрос
+```sql
+select t2.name, count(*) fires from public.fire_history as t1
+inner join public.regions as t2 on t1.region_id = t2.id
+group by t2.name
+order by t2.name
+```
+
+Сравниваем результаты с прошлым решением
+
+```bash
+|   Регион           |       Кол-во пожаров     |
+|--------------------|--------------------------|
+| Ангарский район   | 137 |
+| Баргузинский район   | 453 |
+| Баунтовский район   | 26 |
+```
+
 
 
 

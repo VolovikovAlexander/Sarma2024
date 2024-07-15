@@ -1,4 +1,5 @@
 ﻿
+using System.Security.Cryptography.X509Certificates;
 using GeoJsonConvertor.Models;
 
 namespace GeoJsonConvertor.Core;
@@ -25,4 +26,11 @@ public interface IStorage: IErrorHandler
     /// <param name="source"></param>
     /// <returns></returns>
     public Task Add(FireHistory source);
+
+    /// <summary>
+    /// Сохранить данные по истории
+    /// </summary>
+    /// <param name="source"></param>
+    /// <returns></returns>
+    public Task Save(IDictionary<Region, IList<FireHistory>> source);
 }

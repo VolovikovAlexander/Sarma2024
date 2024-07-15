@@ -27,20 +27,7 @@ class Program
         {
             ConsoleWrite($"Данные из файла {fileName} загружены успешно.");
             var history = convertor.CreateFireHistory();
-
-            foreach(var region in history.Keys)
-            {
-                // Добавляем новые регионы
-                storage.Add(region).GetAwaiter().GetResult();
-
-
-                foreach(var item in history[region])
-                {
-                    // Добавляем новые записи истории
-                    storage.Add(item).GetAwaiter().GetResult();
-                }
-            }
-
+            await storage.Save(history);
             ConsoleWrite("Загрузка данный завершена.");
         }
 
