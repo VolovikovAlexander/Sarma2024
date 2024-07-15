@@ -15,10 +15,14 @@ class Program
                .SetBasePath(Directory.GetCurrentDirectory())
                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                .Build();
-        var options = config.GetSection("ProcessOptions").Get<GeoJsonOptions>() ?? throw new InvalidOperationException("Невозможно получить конфигурационные данные из файла appsettings.json!");
-        ArgumentNullException.ThrowIfNullOrWhiteSpace(options?.ConnectionString);    
 
-      
+        var databaseOptions = config.GetSection("DatabaseOptions").Get<GeoJsonOptions>() ?? throw new InvalidOperationException("Невозможно получить конфигурационные данные из файла appsettings.json!");
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(databaseOptions?.ConnectionString);    
+
+        var processingOptions = config.GetSection("ProcessingOptions").Get<ProcessingOptions>() ?? throw new InvalidOperationException("Невозможно получить конфигурационные данные из файла appsettings.json!");
+        ArgumentNullException.ThrowIfNull(processingOptions);
+        
+         
 
         ConsoleWrite("Приложение завершено.");
         Console.ReadLine();
