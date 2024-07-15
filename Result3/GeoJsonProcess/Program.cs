@@ -21,8 +21,9 @@ class Program
 
         var processingOptions = config.GetSection("ProcessingOptions").Get<ProcessingOptions>() ?? throw new InvalidOperationException("Невозможно получить конфигурационные данные из файла appsettings.json!");
         ArgumentNullException.ThrowIfNull(processingOptions);
-        
-         
+
+        // Запускаем процесс формирования бизнес местрик
+
 
         ConsoleWrite("Приложение завершено.");
         Console.ReadLine();
