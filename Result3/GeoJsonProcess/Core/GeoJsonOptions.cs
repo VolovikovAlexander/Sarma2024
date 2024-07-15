@@ -5,7 +5,7 @@ namespace GeoJsonConvertor.Core;
 /// <summary>
 /// Настройки для работы с хранилищем данных
 /// </summary>
-public class StorageOptions
+public class GeoJsonOptions
 {
     /// <summary>
     /// Строка соединения с базой данных
