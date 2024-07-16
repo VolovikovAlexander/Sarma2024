@@ -6,10 +6,16 @@
 public class Metric
 {
     /// <summary>
-    /// Уникальный код
+    /// Уникальный код детализации по метрикам
     /// </summary>
     /// <value></value>
     public long Id {get; set;}
+
+    /// <summary>
+    /// Уникальный код бизнес метрик
+    /// </summary>
+    /// <value></value>
+    public long MetricId{get; set;}
 
     /// <summary>
     /// Наименование

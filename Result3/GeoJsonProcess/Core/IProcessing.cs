@@ -1,4 +1,6 @@
-﻿namespace GeoJsonConvertor.Core;
+﻿using GeoJsonIProcessing.Models;
+
+namespace GeoJsonConvertor.Core;
 
 /// <summary>
 /// Интерфейс к процессу формирования бизнес метрик
@@ -9,5 +11,5 @@ public interface IProcessing
     /// Сформировать набор бизнес метрик
     /// </summary>
     /// <returns></returns> 
-    public Task Build();
+    public Task Build(Metric source);
 }
