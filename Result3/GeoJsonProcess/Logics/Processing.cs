@@ -57,7 +57,6 @@ public class Processing : IProcessing
         ArgumentException.ThrowIfNullOrWhiteSpace(source.ConnectionString, "Параметр ConnectionString не указан!");
 
         // Подключаемся к исходной базе данных 
-        // https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/populating-a-dataset-from-a-dataadapter
         using var dataSource = new NpgsqlDataSourceBuilder(source.ConnectionString).Build();
         using var connection = dataSource.OpenConnection();
         await using var command = new NpgsqlCommand(source.Sql, connection);
@@ -66,6 +65,8 @@ public class Processing : IProcessing
         using var adapter = new NpgsqlDataAdapter(command);
         var table = new DataTable();
         adapter.Fill(table);
+
+        // Запрос: select row_number() over ( order by year ) as row_number, year, count(*) as cnt from public.fire_history where region_id = '210785d9-5886-4961-bd02-1ed709b96887' group by year order by year
     }
 
     /// <summary>
