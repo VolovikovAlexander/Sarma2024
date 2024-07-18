@@ -1,4 +1,4 @@
-﻿namespace GeoJsonStorage;
+﻿namespace GeoJsonProcessing.Core;
 
 /// <summary>
 /// Типы хранилища данных

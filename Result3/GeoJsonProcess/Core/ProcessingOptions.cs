@@ -1,6 +1,6 @@
-﻿using GeoJsonIProcessing.Models;
+﻿using GeoJsonProcessing.Models;
 
-namespace GeoJsonConvertor.Core;
+namespace GeoJsonProcessing.Core;
 
 
 /// <summary>

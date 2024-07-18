@@ -1,9 +1,11 @@
 ﻿using System.Data;
-using GeoJsonConvertor.Core;
-using GeoJsonIProcessing.Models;
+using GeoJsonProcessing.Core;
+using GeoJsonProcessing.Models;
+using System.Text.Json;
 using Npgsql;
+using System.Text.Json.Serialization;
 
-namespace GeoJsonIProcessing.Logics;
+namespace GeoJsonProcessing.Logics;
 
 /// <summary>
 /// Процесс формирования данных по бизнес метрикам согласно интерфейсу <see cref="IProcessing"/>
@@ -19,6 +21,7 @@ public class Processing : IProcessing
     public async Task Build(Metric source)
     {
         ArgumentNullException.ThrowIfNull(source, nameof(source));
+        source = await Refresh(source);
         await LoadData(source);
 
         // Подключаемся к базе данных назначение
@@ -50,7 +53,11 @@ public class Processing : IProcessing
     /// <returns></returns>
     private async Task LoadData(Metric source)
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentException.ThrowIfNullOrWhiteSpace(source.ConnectionString, "Параметр ConnectionString не указан!");
+
         // Подключаемся к исходной базе данных 
+        // https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/populating-a-dataset-from-a-dataadapter
         using var dataSource = new NpgsqlDataSourceBuilder(source.ConnectionString).Build();
         using var connection = dataSource.OpenConnection();
         await using var command = new NpgsqlCommand(source.Sql, connection);
@@ -59,5 +66,35 @@ public class Processing : IProcessing
         using var adapter = new NpgsqlDataAdapter(command);
         var table = new DataTable();
         adapter.Fill(table);
+    }
+
+    /// <summary>
+    /// Загрузить дополнительные параметры
+    /// </summary>
+    /// <param name="source"> Исходная модель </param>
+    /// <returns></returns>
+    private async Task<Metric> Refresh(Metric source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        using var dataSource = new NpgsqlDataSourceBuilder(_options.ConnectionString).Build();
+        using var connection = dataSource.OpenConnection();
+        var sql =  $"select \"sql\", \"columns\", \"connection_string\", metric_id from public.metrics_details as t1 inner join public.sources as t2 on t1.source_id = t2.id where t1.id = {source.Id} limit 1";
+        await using var command = new NpgsqlCommand(sql, connection);
+
+        // Выполняем запрос 
+        using var adapter = new NpgsqlDataAdapter(command);
+        var table = new DataTable();
+        adapter.Fill(table);
+
+        if(table.Rows.Count == 0) throw new InvalidDataException($"Неккорректно указаны настройки. Нет данных для кода {source.MetricId}!");
+
+        var row = table.Rows[0];
+        source.ConnectionString = row["connection_string"].ToString()!;
+        source.Sql = row["sql"]?.ToString()!;
+        source.Columns = JsonSerializer.Deserialize<List<Column>>(row["columns"].ToString()!)!;
+        source.MetricId =  int.TryParse(row["metric_id"].ToString(), out var metricId) ? metricId : 0;
+
+        return source;
     }
 }

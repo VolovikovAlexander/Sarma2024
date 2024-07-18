@@ -1,4 +1,4 @@
-﻿namespace GeoJsonIProcessing.Models;
+﻿namespace GeoJsonProcessing.Models;
 
 /// <summary>
 /// Модель описание бизнес метрик

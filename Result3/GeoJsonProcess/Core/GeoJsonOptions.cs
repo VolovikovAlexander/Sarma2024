@@ -1,6 +1,4 @@
-﻿using GeoJsonStorage;
-
-namespace GeoJsonConvertor.Core;
+﻿namespace GeoJsonProcessing.Core;
 
 /// <summary>
 /// Настройки для работы с хранилищем данных

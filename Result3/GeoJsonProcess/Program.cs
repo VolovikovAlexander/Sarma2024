@@ -1,8 +1,8 @@
-﻿using GeoJsonConvertor.Core;
-using GeoJsonConvertor.Logics;
+﻿using GeoJsonProcessing.Core;
+using GeoJsonProcessing.Logics;
 using Microsoft.Extensions.Configuration;
 
-namespace GeoJsonConvertor;
+namespace GeoJsonProcessing;
 
 class Program
 {
@@ -23,7 +23,11 @@ class Program
         ArgumentNullException.ThrowIfNull(processingOptions);
 
         // Запускаем процесс формирования бизнес местрик
-
+        var processing = new Processing(databaseOptions);
+        foreach(var metric in processingOptions.BuildMetrics)
+        {
+            await processing.Build(metric);
+        }
 
         ConsoleWrite("Приложение завершено.");
         Console.ReadLine();
