@@ -3,7 +3,6 @@ using GeoJsonProcessing.Core;
 using GeoJsonProcessing.Models;
 using System.Text.Json;
 using Npgsql;
-using System.Text.Json.Serialization;
 
 namespace GeoJsonProcessing.Logics;
 
