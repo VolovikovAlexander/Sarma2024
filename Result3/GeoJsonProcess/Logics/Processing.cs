@@ -17,69 +17,82 @@ public class Processing : IProcessing
     // Набор исходных данных 
     private DataTable _table = new DataTable();
     public Processing(GeoJsonOptions options)  => (_options) = (options);
-    public async Task Build(Metric source)
-    {
-        ArgumentNullException.ThrowIfNull(source, nameof(source));
-        source = await Refresh(source);
-        await LoadData(source);
-
-        // Подключаемся к базе данных назначение
-        using var dataSource = new NpgsqlDataSourceBuilder(_options.ConnectionString).Build();
-        using var connection = dataSource.OpenConnection();
-
-        // Добавим запись в историю
-        var sql = $"insert into public.metric_history(period, source_id) values ('{DateTime.Now.ToString("yyyy-dd-MM")}',{source.MetricId})";
-        var command = new NpgsqlCommand(source.Sql, connection);
-        await command.ExecuteNonQueryAsync();
-
-        foreach(var row in _table.Rows)
-        {
-            foreach(var column in _table.Columns)
-            {
-                var columnName = (column as DataColumn)?.ColumnName ?? throw new InvalidOperationException("Невозможно получить информацию!");
-                var columnData = (row as DataRowView)?[columnName].ToString() ?? "null";
-                sql = $"insert into public.metrics_values(metric_details_id, \"column\", value ) values({columnName}','{columnData});";
-                command = new NpgsqlCommand(sql, connection);
-                await command.ExecuteScalarAsync();
-            }
-        }
-    }
-
+   
     /// <summary>
     /// Загрузить данные для бизнес метрики
     /// </summary>
     /// <param name="source"> Бизнес метрика </param>
     /// <returns></returns>
-    private async Task LoadData(Metric source)
+    public async Task Build(Metric source)
     {
         ArgumentNullException.ThrowIfNull(source);
-        ArgumentException.ThrowIfNullOrWhiteSpace(source.ConnectionString, "Параметр ConnectionString не указан!");
 
-        // Подключаемся к исходной базе данных 
-        using var dataSource = new NpgsqlDataSourceBuilder(source.ConnectionString).Build();
-        using var connection = dataSource.OpenConnection();
-        await using var command = new NpgsqlCommand(source.Sql, connection);
+        // Получаем описание бизнес метрики
+        var metric = await Inrich(source); 
+        // Получаем данные по бизнес метрики
+        var table = await Select(metric.ConnectionString, metric.Sql);
 
-        // Выполняем запрос 
-        using var adapter = new NpgsqlDataAdapter(command);
-        var table = new DataTable();
-        adapter.Fill(table);
+        if(table.Rows.Count == 0) throw new InvalidOperationException($"Некорректно произведены настройки для бизнес метрики {source}. Нет данных!");
+
+        // Записываем запись в историю
+        await Execute(_options.ConnectionString, $"insert into public.work_history(period, source)id) values('{DateTime.Now.ToString("yyyy-MM-dd")}',{metric.SourceId})");
+        var history = await Select(_options.ConnectionString, "select id from  public.work_history( order by id limit 1");
+        var historyId = int.TryParse(history.Rows[0]["metric_id"].ToString(), out var _id) ? _id : 0;
+
+        if(historyId == 0) throw new InvalidOperationException($"Невозможно получить код записи истории!");
+
+        foreach(var row in table.Rows)
+        {
+            foreach(var column in metric.Columns)
+            {
+                // TODO: дописать запрос
+                var sql = "insert into public.work_results(metrics_details_id, column, value, work_history_id, row_id)";
+            }
+        }
+
 
         // Запрос: select row_number() over ( order by year ) as row_number, year, count(*) as cnt from public.fire_history where region_id = '210785d9-5886-4961-bd02-1ed709b96887' group by year order by year
     }
 
     /// <summary>
-    /// Загрузить дополнительные параметры
+    /// Дополнить параметры модели
     /// </summary>
     /// <param name="source"> Исходная модель </param>
     /// <returns></returns>
-    private async Task<Metric> Refresh(Metric source)
+    private async Task<Metric> Inrich(Metric source)
     {
         ArgumentNullException.ThrowIfNull(source);
 
-        using var dataSource = new NpgsqlDataSourceBuilder(_options.ConnectionString).Build();
+        // Выборка из базы данных - описание
+        var sql =  $"select \"sql\", \"columns\", \"connection_string\", metric_id, source_id from public.metrics_details as t1 inner join public.sources as t2 on t1.source_id = t2.id where t1.id = {source.Id} limit 1";
+        var table = await Select(_options.ConnectionString, sql);
+        
+        var row = table.Rows[0];
+
+        // Загружаем дополнительные параметры
+        source.ConnectionString = row["connection_string"].ToString()!;
+        source.Sql = row["sql"]?.ToString()!;
+        source.Columns = JsonSerializer.Deserialize<List<Column>>(row["columns"].ToString()!)!;
+        source.MetricId =  int.TryParse(row["metric_id"].ToString(), out var metricId) ? metricId : 0;
+        source.SourceId =   int.TryParse(row["source_id"].ToString(), out var sourceId) ? metricId : 0;
+
+        return source;
+    }
+
+    /// <summary>
+    /// Выполнить SQL запрос и вернуть результат в виде <see cref="DataTable"/>
+    /// </summary>
+    /// <param name="connectionString"> Строка соединения </param>
+    /// <param name="sql"> SQL запрос </param>
+    /// <returns></returns> 
+    private async Task<DataTable> Select(string connectionString, string sql)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(connectionString);
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(sql);
+
+        // Подключаемся
+        using var dataSource = new NpgsqlDataSourceBuilder(connectionString).Build();
         using var connection = dataSource.OpenConnection();
-        var sql =  $"select \"sql\", \"columns\", \"connection_string\", metric_id from public.metrics_details as t1 inner join public.sources as t2 on t1.source_id = t2.id where t1.id = {source.Id} limit 1";
         await using var command = new NpgsqlCommand(sql, connection);
 
         // Выполняем запрос 
@@ -87,14 +100,33 @@ public class Processing : IProcessing
         var table = new DataTable();
         adapter.Fill(table);
 
-        if(table.Rows.Count == 0) throw new InvalidDataException($"Неккорректно указаны настройки. Нет данных для кода {source.MetricId}!");
-
-        var row = table.Rows[0];
-        source.ConnectionString = row["connection_string"].ToString()!;
-        source.Sql = row["sql"]?.ToString()!;
-        source.Columns = JsonSerializer.Deserialize<List<Column>>(row["columns"].ToString()!)!;
-        source.MetricId =  int.TryParse(row["metric_id"].ToString(), out var metricId) ? metricId : 0;
-
-        return source;
+        return table;     
     }
+
+    /// <summary>
+    /// Выполнить SQL запрос
+    /// </summary>
+    /// <param name="connectionString"> Строка соединения </param>
+    /// <param name="sql"> SQL запрос </param>
+    /// <returns></returns> <summary>
+    /// 
+    /// </summary>
+    /// <param name="connectionString"></param>
+    /// <param name="sql"></param>
+    /// <returns></returns>
+    private async Task Execute(string connectionString, string sql)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(connectionString);
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(sql);
+
+        // Подключаемся
+        using var dataSource = new NpgsqlDataSourceBuilder(connectionString).Build();
+        using var connection = dataSource.OpenConnection();
+        await using var command = new NpgsqlCommand(sql, connection);
+
+        // Выполняем запрос
+        await command.ExecuteNonQueryAsync();
+    }
+
+
 }

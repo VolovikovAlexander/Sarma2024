@@ -15,7 +15,7 @@ public class Metric
     /// Уникальный код бизнес метрик
     /// </summary>
     /// <value></value>
-    public long MetricId{get; set;}
+    public long MetricId {get; set;}
 
     /// <summary>
     /// Наименование
@@ -38,4 +38,10 @@ public class Metric
     /// Список колонок SQL запроса
     /// </summary>
     public IList<Column> Columns {get; set;} = new List<Column>();
+
+    /// <summary>
+    /// Уникальный код источника данных
+    /// </summary>
+    /// <value></value>
+    public long SourceId {get; set;}
 }
