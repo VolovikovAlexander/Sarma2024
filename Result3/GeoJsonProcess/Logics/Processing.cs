@@ -35,23 +35,22 @@ public class Processing : IProcessing
         if(table.Rows.Count == 0) throw new InvalidOperationException($"Некорректно произведены настройки для бизнес метрики {source}. Нет данных!");
 
         // Записываем запись в историю
-        await Execute(_options.ConnectionString, $"insert into public.work_history(period, source)id) values('{DateTime.Now.ToString("yyyy-MM-dd")}',{metric.SourceId})");
-        var history = await Select(_options.ConnectionString, "select id from  public.work_history( order by id limit 1");
-        var historyId = int.TryParse(history.Rows[0]["metric_id"].ToString(), out var _id) ? _id : 0;
+        await Execute(_options.ConnectionString, $"insert into public.work_history(period, source_id) values('{DateTime.Now.ToString("yyyy-MM-dd")}',{metric.SourceId})");
+        var history = await Select(_options.ConnectionString, "select id from  public.work_history order by id limit 1");
+        var historyId = int.TryParse(history.Rows[0]["id"].ToString(), out var _id) ? _id : 0;
 
         if(historyId == 0) throw new InvalidOperationException($"Невозможно получить код записи истории!");
 
+        // Сохраняем записи по бизнес метрики
         foreach(var row in table.Rows)
         {
             foreach(var column in metric.Columns)
             {
-                // TODO: дописать запрос
-                var sql = "insert into public.work_results(metrics_details_id, column, value, work_history_id, row_id)";
+                var view = (row as DataRow)!;
+                var sql = $"insert into public.work_results(metrics_details_id, \"column\", \"value\", work_history_id, row_id) values({source.MetricId},'{column.Name}','{view[column.Name]}',{historyId},{view["row_number"]})";
+                await Execute(_options.ConnectionString, sql);
             }
         }
-
-
-        // Запрос: select row_number() over ( order by year ) as row_number, year, count(*) as cnt from public.fire_history where region_id = '210785d9-5886-4961-bd02-1ed709b96887' group by year order by year
     }
 
     /// <summary>
@@ -108,12 +107,7 @@ public class Processing : IProcessing
     /// </summary>
     /// <param name="connectionString"> Строка соединения </param>
     /// <param name="sql"> SQL запрос </param>
-    /// <returns></returns> <summary>
-    /// 
-    /// </summary>
-    /// <param name="connectionString"></param>
-    /// <param name="sql"></param>
-    /// <returns></returns>
+    /// <returns></returns> 
     private async Task Execute(string connectionString, string sql)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(connectionString);
@@ -127,6 +121,4 @@ public class Processing : IProcessing
         // Выполняем запрос
         await command.ExecuteNonQueryAsync();
     }
-
-
 }
