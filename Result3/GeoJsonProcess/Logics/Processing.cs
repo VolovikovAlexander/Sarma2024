@@ -14,8 +14,6 @@ public class Processing : IProcessing
     // Настройки подключения
     private readonly GeoJsonOptions _options;
 
-    // Набор исходных данных 
-    private DataTable _table = new DataTable();
     public Processing(GeoJsonOptions options)  => (_options) = (options);
    
     /// <summary>
