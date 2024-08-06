@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>GeoJsonWeb</title>
+    <!-- CSS -->
+    <link href="./css/bootstrap.css" rel="stylesheet">
+    <link href="./css/jquery-ui.css" rel="stylesheet">
+
+    <!-- Скрипты -->
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/Chart.min.js"></script>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/jquery-ui.js"></script>
+
+</head>
+
+  <body>
+    <h1>GeoJsonWeb</h1>
+    <div style="width: 800px;"><canvas id="GeoJsonWebConvas"></canvas></div>
+    <script>
+        (async function() {
+        const data = [
+            { year: 2010, count: 10 },
+            { year: 2011, count: 20 },
+            { year: 2012, count: 15 },
+            { year: 2013, count: 25 },
+            { year: 2014, count: 22 },
+            { year: 2015, count: 30 },
+            { year: 2016, count: 28 },
+        ];
+
+        var convas =  document.getElementById('GeoJsonWebConvas');
+        console.log(convas);
+
+        new Chart(
+            convas,
+            {
+                type: 'bar',
+                data: {
+                    labels: data.map(row => row.year),
+                    datasets: [
+                        {
+                            label: 'year',
+                            data: data.map(row => row.count)
+                        }]
+                    }
+            }
+        );
+        })();
+    </script>
+  </body>
+</html>

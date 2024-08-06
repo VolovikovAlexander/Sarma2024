@@ -1,0 +1,6 @@
+@GeoJsonWeb_HostAddress = http://localhost:5287
+
+GET {{GeoJsonWeb_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
