@@ -4,43 +4,48 @@
     <title>GeoJsonWeb</title>
     <!-- CSS -->
     <link href="./css/bootstrap.css" rel="stylesheet">
-    <link href="./css/jquery-ui.css" rel="stylesheet">
 
     <!-- Скрипты -->
     <script src="./js/bootstrap.min.js"></script>
     <script src="./js/Chart.min.js"></script>
-    <script src="./js/jquery.min.js"></script>
-    <script src="./js/jquery-ui.js"></script>
 
 </head>
 
   <body>
-    <h1>GeoJsonWeb</h1>
+    <h1>Бизнес метрики</h1>
+    <h3>Анализ пожаров за период по Иркутской области</h3>
     <div style="width: 800px;"><canvas id="GeoJsonWebConvas"></canvas></div>
     <script>
         (async function() {
-        const data = [
-            { year: 2010, count: 10 },
-            { year: 2011, count: 20 },
-            { year: 2012, count: 15 },
-            { year: 2013, count: 25 },
-            { year: 2014, count: 22 },
-            { year: 2015, count: 30 },
-            { year: 2016, count: 28 },
-        ];
 
-        var convas =  document.getElementById('GeoJsonWebConvas');
-        console.log(convas);
+            var data = [];
 
-        new Chart(
+
+            // Получаем данные
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://localhost:5287/expectancefires?startPeriod=2021-01-01&endPeriod=2024-05-01", false);
+
+            xhr.onload = function() {
+                data = JSON.parse(xhr.response);
+            };
+
+            xhr.onerror = function() { 
+                console.log('Ошибка соединения');
+            };
+            xhr.send();
+
+            var convas =  document.getElementById('GeoJsonWebConvas');
+
+            // Формируем график 
+            new Chart(
             convas,
             {
                 type: 'bar',
                 data: {
-                    labels: data.map(row => row.year),
+                    labels: data.map(row => row.id),
                     datasets: [
                         {
-                            label: 'year',
+                            label: 'Год / месяц',
                             data: data.map(row => row.count)
                         }]
                     }

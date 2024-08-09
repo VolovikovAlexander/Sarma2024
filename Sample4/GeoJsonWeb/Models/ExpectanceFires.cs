@@ -17,5 +17,5 @@ public class ExpectanceFires: IModel
     /// Количество пожаров, которые мы лжидаем
     /// </summary>
     /// <value></value>
-    public long Value {get;set;}
+    public long Count {get;set;}
 }

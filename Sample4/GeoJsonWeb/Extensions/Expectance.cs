@@ -25,7 +25,7 @@ public static class Expectance
         {
             result.Add( new ExpectanceFires()
             {
-                 Id = currentCode, Value = rnd.Next(0, 100)
+                Id = currentCode, Count = rnd.Next(0, 100)
             });
 
             currentPeriod = currentPeriod.AddMonths(1);
