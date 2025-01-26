@@ -39,12 +39,13 @@
 
 |               |                |
 |---------------|----------------|
-| ![](./_Images/2.png) | ![](./_Images/3.jpg) |
+| ![](./_Images/2.png) | ![](./_Images/3.jpeg) |
 | ![](./_Images/2.jpeg) | ![](./_Images/1.png) |
-| ![](./_Images/3.png) | ![](./_Images/1.png) |
+| ![](./_Images/3.png) | ![](./_Images/4.png) |
+| | | 
 
 #### Спонсор
-[ИТ1](https://www.it-one.ru/)
+- [ИТ1](https://www.it-one.ru/)
 
  
 
