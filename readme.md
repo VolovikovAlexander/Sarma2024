@@ -45,8 +45,8 @@
 | | | 
 
 #### Спонсор
-- [ИТ1](https://www.it-one.ru/)
-
+- [`ИТ1`](https://www.it-one.ru/)
+- [`Beeline`](.beeline.ru) - @beelinetech
  
 
 
